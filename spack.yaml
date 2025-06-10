@@ -5,7 +5,7 @@ spack:
 
   specs:
     - cmake
-    # - hdf5
+    - py-ray
 
   packages:
     all:
@@ -18,5 +18,4 @@ spack:
       signed: false
 
   repos:
-    builtin:
-      path: ./spack-packages
+    - ./spack.numpex
