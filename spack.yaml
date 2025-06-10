@@ -5,7 +5,7 @@ spack:
 
   specs:
     - cmake
-    - hdf5
+    # - hdf5
 
   packages:
     all:
