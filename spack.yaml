@@ -16,3 +16,7 @@ spack:
     buildcache:
       url: oci://ghcr.io/viperml/parflow-env
       signed: false
+
+  repos:
+    builtin:
+      path: ./spack-packages
