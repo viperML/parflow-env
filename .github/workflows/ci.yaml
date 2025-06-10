@@ -1,0 +1,83 @@
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    container: rockylinux:9
+    steps:
+      - name: Install dependencies
+        # Dependencies copied from:
+        # https://github.com/spack/spack/blob/develop/share/spack/templates/container/almalinux_8.dockerfile
+        run: |
+          dnf update -y
+          dnf install -y --allowerasing \
+            bzip2 \
+            curl \
+            file \
+            findutils \
+            gcc-c++ \
+            gcc \
+            gcc-gfortran \
+            git \
+            gnupg2 \
+            hostname \
+            iproute \
+            make \
+            patch \
+            python3 \
+            python3-pip \
+            python3-setuptools \
+            svn \
+            unzip \
+            zstd \
+            diffutils \
+            xz
+
+      - uses: actions/checkout@v4
+
+      - uses: spack/setup-spack@v2
+
+      - uses: viperML/spack-buildcache-action@main
+        with:
+          environment: .
+
+      - uses: actions/cache/save@v4
+        with:
+          path: ./spack.lock
+          key: spack-lock
+  
+  relock:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull spack.lock
+        uses: actions/cache/restore@v4
+        with:
+          path: ./spack.lock
+          key: spack-lock
+
+      - name: Commit and push spack.lock if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add spack.lock
+          if ! git diff --cached --quiet; then
+            set -e
+            git commit -m "ci: update spack.lock"
+          fi
+          git push origin HEAD:${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

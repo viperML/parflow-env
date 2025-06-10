@@ -1,0 +1,18 @@
+spack:
+  view: true
+  concretizer:
+    unify: true
+
+  specs:
+    - cmake
+    - hdf5
+
+  packages:
+    all:
+      require:
+        - target=x86_64
+
+  mirrors:
+    buildcache:
+      url: oci://ghcr.io/viperml/parflow-env
+      signed: false
