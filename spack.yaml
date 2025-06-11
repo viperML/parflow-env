@@ -4,8 +4,21 @@ spack:
     unify: true
 
   specs:
-    - cmake
-    - py-ray
+  - cmake
+  - hdf5
+  - libyaml
+  - openmpi
+  - python @3.12 # required for ray
+  - py-ray
+  - py-dask @2024.7.1 +distributed
+  - py-distributed @2024.7.1
+  - py-h5py
+  - py-graphviz
+  - py-pandas
+  - py-setuptools
+  - tcl
+  - netcdf-c +parallel-netcdf
+  - py-bokeh
 
   packages:
     all:
